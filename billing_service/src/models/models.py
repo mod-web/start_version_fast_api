@@ -1,7 +1,8 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import MetaData, Table, Column, Integer, String, TIMESTAMP, ForeignKey, UUID
+from sqlalchemy import MetaData, Table, Column, String, DateTime, UUID
+
 
 metadata = MetaData()
 
@@ -12,13 +13,11 @@ orders = Table(
            UUID(as_uuid=True),
            primary_key=True,
            default=uuid.uuid4,
-           unique=True,
-           nullable=False),
+           unique=True),
     Column('user_id',
            UUID(as_uuid=True),
-           unique=True,
            nullable=False),
     Column('status', String),
-    Column('created_at', TIMESTAMP, default=datetime.now()),
-    Column('updated_at', TIMESTAMP, default=datetime.now()),
+    Column('created_at', DateTime, default=datetime.now()),
+    Column('update_at', DateTime, default=datetime.now()),
 )

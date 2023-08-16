@@ -1,5 +1,9 @@
 import uuid
 from fastapi import APIRouter, Depends
+from sqlalchemy.sql import text
+
+from src.models.models import orders
+from src.db.base import get_session
 
 
 router = APIRouter()
@@ -7,11 +11,18 @@ router = APIRouter()
 
 @router.post(
     '/',
-    description='New order creation',
     summary='New order creation',
+    description='user_id: 5a146f79-cf46-4c7e-ab09-e0e172a5c32e',
 )
 async def new_order(
-    # broker: RabbitmqBroker = Depends(get_broker),
+    user_id: str,
+    db = Depends(get_session),
 ) -> str:
-    payment_id = str(uuid.uuid4())
-    return payment_id
+    order_id = uuid.uuid4()
+    # statement = text(f"""INSERT INTO public.orders (id, user_id, status) VALUES ('{order_id}', '{user_id}', 'panding')""")
+    try:
+        await db.execute(orders.insert().values(id=order_id, user_id=user_id, status='pending'))
+        await db.commit()
+    except Exception as e:
+        print(str(e))
+    return str(order_id)
