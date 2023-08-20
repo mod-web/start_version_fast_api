@@ -16,13 +16,13 @@ router = APIRouter()
 )
 async def new_order(
     user_id: str,
-    db = Depends(get_session),
+    session = Depends(get_session),
 ) -> str:
     order_id = uuid.uuid4()
     # statement = text(f"""INSERT INTO public.orders (id, user_id, status) VALUES ('{order_id}', '{user_id}', 'panding')""")
     try:
-        await db.execute(orders.insert().values(id=order_id, user_id=user_id, status='pending'))
-        await db.commit()
+        await session.execute(orders.insert().values(id=order_id, user_id=user_id, status='created'))
+        await session.commit()
     except Exception as e:
         print(str(e))
     return str(order_id)
